@@ -7,148 +7,158 @@
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: Arial;
-}
+        /* ===== GENERAL ===== */
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial;
+        }
 
-body{
-    height:100vh;
-    display:flex;
-    flex-direction:column;
-    background:#eaeaea;
-}
+        body{
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            background:#eaeaea;
+        }
 
-/* ===== HEADER ===== */
-.header{
-    background:#1f5c2e;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 25px;
-}
+        /* ===== HEADER ===== */
+        .header{
+            background:#1f5c2e;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:15px 25px;
+        }
 
-.titulo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
+        .titulo{
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
 
-.titulo img{
-    width:40px;
-}
+        .titulo img{
+            width:40px;
+        }
 
-.agregar{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:none;
-    border:none;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
-}
+        /* ===== BOTÓN AGREGAR (NUEVO) ===== */
+        .boton-agregar{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            text-decoration:none;
+            color:white;
+            font-size:14px;
+            background:#2e7d32;
+            padding:8px 12px;
+            border-radius:10px;
+            transition:0.3s;
+        }
 
-.agregar img{
-    width:20px;
-}
+        .boton-agregar:hover{
+            background:#256628;
+        }
 
-/* ===== CONTENEDOR ===== */
-.contenedor{
-    flex:1;
-    display:flex;
-}
+        /* 👇 AQUÍ CAMBIAS EL TAMAÑO DE LA IMAGEN */
+        .boton-agregar img{
+            width:25px;
+            height:25px;
+        }
 
-/* ===== SIDEBAR ===== */
-.sidebar{
-    width:220px;
-    background:#0f3d1e;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:15px;
-    gap:15px;
-}
+        /* ===== CONTENEDOR ===== */
+        .contenedor{
+            flex:1;
+            display:flex;
+        }
 
-.categoria{
-    width:100%;
-    background:#d7f0dc;
-    border-radius:15px;
-    padding:10px;
-    border:none;
-    cursor:pointer;
-    text-align:center;
-}
+        /* ===== SIDEBAR ===== */
+        .sidebar{
+            width:220px;
+            background:#0f3d1e;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding:15px;
+            gap:15px;
+        }
 
-.categoria img{
-    width:45px;
-}
+        .categoria{
+            width:100%;
+            background:#d7f0dc;
+            border-radius:15px;
+            padding:10px;
+            border:none;
+            cursor:pointer;
+            text-align:center;
+        }
 
-.mostrar{
-    padding:8px;
-    border-radius:20px;
-    border:none;
-    cursor:pointer;
-}
+        .categoria img{
+            width:45px;
+        }
 
-/* Botón regresar */
-.regresar{
-    margin-top:auto;
-    background:none;
-    border:none;
-    cursor:pointer;
-}
+        .mostrar{
+            padding:8px;
+            border-radius:20px;
+            border:none;
+            cursor:pointer;
+        }
 
-.regresar img{
-    width:35px;
-}
+        /* Botón regresar */
+        .regresar{
+            margin-top:auto;
+            background:none;
+            border:none;
+            cursor:pointer;
+        }
 
-/* ===== MAIN ===== */
-.main{
-    flex:1;
-    padding:20px;
-}
+        .regresar img{
+            width:35px;
+        }
 
-.buscador{
-    display:flex;
-    justify-content:flex-end;
-    margin-bottom:10px;
-}
+        /* ===== MAIN ===== */
+        .main{
+            flex:1;
+            padding:20px;
+        }
 
-.buscador input{
-    padding:8px;
-    border-radius:20px;
-    border:1px solid #aaa;
-}
+        .buscador{
+            display:flex;
+            justify-content:flex-end;
+            margin-bottom:10px;
+        }
 
-.tabla{
-    background:#cfe5d6;
-    padding:15px;
-    border-radius:15px;
-}
+        .buscador input{
+            padding:8px;
+            border-radius:20px;
+            border:1px solid #aaa;
+        }
 
-.tabla-scroll{
-    max-height:350px;
-    overflow-y:auto;
-}
+        .tabla{
+            background:#cfe5d6;
+            padding:15px;
+            border-radius:15px;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        .tabla-scroll{
+            max-height:350px;
+            overflow-y:auto;
+        }
 
-th, td{
-    border:2px solid #3b6b4a;
-    padding:10px;
-    text-align:center;
-}
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
 
-th{
-    background:#b8d8c3;
-}
+        th, td{
+            border:2px solid #3b6b4a;
+            padding:10px;
+            text-align:center;
+        }
+
+        th{
+            background:#b8d8c3;
+        }
 
 </style>
 </head>
@@ -163,10 +173,11 @@ th{
         <img src="/static/inventario.png">
     </div>
 
-    <button class="agregar" onclick="window.location.href='/agregarproducto'">
+    <!-- BOTÓN CORREGIDO -->
+    <a href="agregarproductos.html" class="boton-agregar">
         <img src="/static/agregar.png">
-        Agregar
-    </button>
+        <span>Agregar Producto</span>
+    </a>
 
 </div>
 
