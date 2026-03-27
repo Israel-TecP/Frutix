@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:#eaeaea;
+}
+
+/* ===== HEADER ===== */
+.header{
+    background:#1f5c2e;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 25px;
+}
+
+.titulo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.titulo img{
+    width:40px;
+}
+
+.agregar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:none;
+    border:none;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.agregar img{
+    width:20px;
+}
+
+/* ===== CONTENEDOR ===== */
+.contenedor{
+    flex:1;
+    display:flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+    width:220px;
+    background:#0f3d1e;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:15px;
+    gap:15px;
+}
+
+.categoria{
+    width:100%;
+    background:#d7f0dc;
+    border-radius:15px;
+    padding:10px;
+    border:none;
+    cursor:pointer;
+    text-align:center;
+}
+
+.categoria img{
+    width:45px;
+}
+
+.mostrar{
+    padding:8px;
+    border-radius:20px;
+    border:none;
+    cursor:pointer;
+}
+
+/* Botón regresar */
+.regresar{
+    margin-top:auto;
+    background:none;
+    border:none;
+    cursor:pointer;
+}
+
+.regresar img{
+    width:35px;
+}
+
+/* ===== MAIN ===== */
+.main{
+    flex:1;
+    padding:20px;
+}
+
+.buscador{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:10px;
+}
+
+.buscador input{
+    padding:8px;
+    border-radius:20px;
+    border:1px solid #aaa;
+}
+
+.tabla{
+    background:#cfe5d6;
+    padding:15px;
+    border-radius:15px;
+}
+
+.tabla-scroll{
+    max-height:350px;
+    overflow-y:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    border:2px solid #3b6b4a;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#b8d8c3;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+
+    <div class="titulo">
+        <h1>Inventario</h1>
+        <img src="/static/inventario.png">
+    </div>
+
+    <button class="agregar" onclick="window.location.href='/agregarproducto'">
+        <img src="/static/agregar.png">
+        Agregar
+    </button>
+
+</div>
+
+<!-- CONTENIDO -->
+<div class="contenedor">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <button class="categoria">
+            <img src="/static/frutas.png">
+            <div>Frutas</div>
+        </button>
+
+        <button class="categoria">
+            <img src="/static/verduras.png">
+            <div>Verduras</div>
+        </button>
+
+        <button class="categoria">
+            <img src="/static/abarrotes.png">
+            <div>Abarrotes</div>
+        </button>
+
+        <button class="categoria">
+            <img src="/static/carne.png">
+            <div>Carnes</div>
+        </button>
+
+        <button class="categoria">
+            <img src="/static/condimentos.png">
+            <div>Condimentos</div>
+        </button>
+
+        <button class="categoria">
+            <img src="/static/dulces.png">
+            <div>Dulces</div>
+        </button>
+
+        <button class="mostrar">MOSTRAR TODO</button>
+
+        <!-- BOTÓN REGRESAR -->
+        <button class="regresar" onclick="regresar()">
+            <img src="/static/atrass.png">
+        </button>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="buscador">
+            <input type="text" placeholder="Buscar producto...">
+        </div>
+
+        <div class="tabla">
+
+            <div class="tabla-scroll">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Nombre</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Tipo venta</th>
+                            <th>Merma</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td colspan="7">No hay productos registrados</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
