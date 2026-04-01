@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venta del día</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+<style>
+
+body{
+    margin:0;
+    font-family: Arial;
+    background-color: #e9e6cf;
+}
+
+/* HEADER */
+.header{
+    background:#0b3d0b;
+    color:white;
+    display:flex;
+    justify-content: space-between;
+    padding:10px 20px;
+}
+
+.rol{
+    background:#a6d96a;
+    padding:5px 15px;
+    border-radius:20px;
+}
+
+/* TITULO */
+.titulo{
+    color:#5ca36b;
+    font-size:40px;
+    font-weight:bold;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.contenedor-principal{
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+/* IZQUIERDA */
+.lado-productos{
+    flex:3;
+}
+
+/* DERECHA */
+.lado-ticket{
+    flex:1;
+}
+
+/* CONTENEDOR INTERNO */
+.contenedor{
+    display:flex;
+    gap:20px;
+}
+
+/* CATEGORIAS */
+.categorias{
+    width:200px;
+    background:#dcd8bf;
+    padding:10px;
+    border-radius:10px;
+}
+
+.categorias button{
+    width:100%;
+    margin:8px 0;
+    background:#5ca36b;
+    border:none;
+    padding:10px;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+/* PRODUCTOS */
+.productos{
+    flex:1;
+    background:#dcd8bf;
+    padding:15px;
+    border-radius:10px;
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:15px;
+    max-height:450px;
+    overflow-y:auto;
+}
+
+.producto{
+    background:#cfe3d4;
+    border-radius:10px;
+    padding:10px;
+    text-align:center;
+}
+
+.producto img{
+    width:100%;
+    height:100px;
+    object-fit:contain;
+}
+
+/* TICKET */
+.ticket{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    position:sticky;
+    top:20px;
+}
+
+/* MENSAJE */
+.mensaje{
+    background:#d4edda;
+    padding:10px;
+    border-radius:10px;
+    margin:10px;
+}
+
+/* BOTON REGRESAR */
+.btn-regresar{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    cursor:pointer;
+    transition: transform 0.2s;
+}
+
+.btn-regresar img{
+    width:65px;
+}
+
+.btn-regresar:hover{
+    transform: scale(1.1);
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div><strong>El Divino Niño</strong></div>
+    <div id="fecha-hora"></div>
+    <div class="rol">{{ session.get('rol','Empleado') }}</div>
+</div>
+
+<div class="container mt-3">
+
+    <div class="titulo">Venta del día</div>
+    <hr>
+
+    <!-- MENSAJE -->
+    <div id="mensaje-venta"></div>
+
+    <form id="form-venta">
+
+    <div class="contenedor-principal">
+
+        <!-- IZQUIERDA -->
+        <div class="lado-productos">
+
+            <div class="contenedor">
+
+                <!-- CATEGORIAS -->
+                <div class="categorias">
+                    <strong>Categoría</strong>
+
+                    <button type="button" onclick="filtrar('todas')">Todas</button>
+                    <button type="button" onclick="filtrar('frutas')">Frutas</button>
+                    <button type="button" onclick="filtrar('verduras')">Verduras</button>
+                    <button type="button" onclick="filtrar('carne')">Carne</button>
+                    <button type="button" onclick="filtrar('abarrotes')">Abarrotes</button>
+                    <button type="button" onclick="filtrar('condimentos')">Condimentos</button>
+                    <button type="button" onclick="filtrar('dulces')">Dulces</button>
+                </div>
+
+                <!-- PRODUCTOS -->
+                <div class="productos">
+                    {% for producto in productos %}
+                    <div class="producto" data-categoria="{{ producto.categoria }}">
+                        <img src="{{ url_for('static', filename=producto.imagen) }}">
+                        <strong>{{ producto.nombre }}</strong>
+                        <p>$ {{ producto.precio }}</p>
+                        <input type="number"
+                               name="productos[{{ producto.id_productos }}][cantidad]"
+                               min="1"
+                               max="{{ producto.cantidad }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DERECHA (TICKET) -->
+        <div class="lado-ticket">
+
+            <div class="ticket">
+
+                <h5>Resumen</h5>
+
+                <div id="resumen-productos"></div>
+
+                <p><strong>Total:</strong> $<span id="total">0</span></p>
+
+                <input type="number" id="efectivo" placeholder="Efectivo">
+
+                <p><strong>Cambio:</strong> $<span id="cambio">0</span></p>
+
+                <button class="btn btn-success w-100">Confirmar venta</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </form>
+
+</div>
+
+<!-- BOTON REGRESAR -->
+<div class="btn-regresar" onclick="regresar()">
+    <img src="{{ url_for('static', filename='atrass.png') }}">
+</div>
+
+<script>
+
+// ===== FECHA Y HORA =====
+function actualizarHora(){
+    const ahora = new Date();
+
+    const opciones = {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+
+    document.getElementById("fecha-hora").textContent =
+        ahora.toLocaleDateString('es-MX', opciones);
+}
+setInterval(actualizarHora,1000);
+actualizarHora();
+
+
+// ===== FILTRO =====
+function filtrar(cat){
+    document.querySelectorAll('.producto').forEach(p=>{
+        p.style.display = (cat === 'todas' || p.dataset.categoria === cat) ? 'block':'none';
+    });
+}
+
+
+// ===== TOTAL =====
+const productos = {{ productos | tojson }};
+const totalLabel = document.getElementById("total");
+
+document.querySelectorAll('input[name^="productos["]').forEach(input=>{
+    input.addEventListener("input",()=>{
+        let total=0;
+
+        document.querySelectorAll('input[name^="productos["]').forEach(i=>{
+            let c=parseFloat(i.value);
+            let id=i.name.match(/\d+/)[0];
+            let prod=productos.find(p=>p.id_productos==id);
+
+            if(prod && c>0){
+                total+=prod.precio*c;
+            }
+        });
+
+        totalLabel.textContent=total.toFixed(2);
+    });
+});
+
+
+// ===== CAMBIO =====
+document.getElementById("efectivo").addEventListener("input",()=>{
+    let e=parseFloat(document.getElementById("efectivo").value);
+    let t=parseFloat(totalLabel.textContent);
+
+    document.getElementById("cambio").textContent =
+        (!isNaN(e)&&e>=t)?(e-t).toFixed(2):"0";
+});
+
+
+// ===== AJAX =====
+document.getElementById("form-venta").addEventListener("submit",function(e){
+    e.preventDefault();
+
+    fetch("/procesar_venta",{
+        method:"POST",
+        body:new FormData(this)
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        document.getElementById("mensaje-venta").innerHTML =
+            `<div class="mensaje">${data.mensaje}</div>`;
+    });
+});
+
+
+// regresar dependiendo del rol
+function regresar(){
+    let rol = "{{ session.get('rol','empleado') }}";
+
+    if(rol==="admin"){
+        window.location.href="/login_adm";
+    }else if(rol==="gerente"){
+        window.location.href="/login_gerente";
+    }else{
+        window.location.href="/login_empleado";
+    }
+}
+
+</script>
+
+</body>
+</html>
