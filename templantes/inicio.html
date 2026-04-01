@@ -3,120 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <title>Inicio - El Divino Niño</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 
-    /* Fondo */
-    body{
+    body {
         margin: 0;
         padding: 0;
         font-family: 'Poppins', sans-serif;
         background-color: #1b461a;
-        background-image: url('/static/fondoverde.png');
-        background-size: 100% auto;       
+        background-image: url("{{ url_for('static', filename='fondoverde.png') }}");
+        background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 100vh;
-        overflow: hidden;
-        
     }
 
-    
-
-    h1{
+    h1 {
         font-family: 'Playfair Display', serif;
         font-size: 2rem;
-        font-style: italic;
         color: #ffffff;
         margin-bottom: 10px;
     }
 
-    /* Tarjeta principal  */
-    .main-card{
-        position: relative;
-        z-index: 1;
-        background: rgba(255,255,255,0.08); /* Fondo translúcido */
+    .main-card {
+        background: rgba(255,255,255,0.08);
         backdrop-filter: blur(10px);
         border-radius: 20px;
         box-shadow: 0 8px 30px rgba(0,0,0,0.4);
         padding: 40px 30px;
         width: 350px;
         text-align: center;
-        animation: fadeIn 0.6s ease;
-    } 
+    }
 
-    /* Imagen debajo del título */
     .imagen-fruteria {
-        width: 150px;      
-        height: auto;      
-        display: block;    
-        margin: 10px auto 20px auto; 
-        border-radius: 15px; 
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        width: 140px;
+        margin: 10px auto 20px auto;
+        display: block;
+        border-radius: 15px;
     }
 
-    .contenido {
-        color: #ffffff;
-        font-size: 18px;
-        font-weight: 600;
-        padding: 10px;
+    .input-wrapper { /*espacio entre cada input */
+        margin-bottom: 15px;
     }
 
-    /* Botón de login */
+    .input-wrapper input {
+        width: 100%;
+        padding: 12px; /*espacio interno */
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font-size: 14px;
+        box-sizing: border-box; /*esto evita que se salgan */
+        outline: none; /*quita el borde al hacer click*/
+    }
+
+    .input-wrapper input::placeholder { /*es el texto guia */
+        color: rgba(255,255,255,0.5);
+    }
+
+    .input-wrapper input:focus { /*este hace que se vuelva verde al escribir */
+        border-color: #37e031;
+        background: rgba(255,255,255,0.15);
+    }
+
     .boton-login {
+        width: 100%;
         padding: 12px;
-        width: 80%;
         background-color: #37e031;
         color: white;
         border: none;
         border-radius: 10px;
         font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        transition: background 0.3s;
-        margin: 10px auto;
-        display: block;
-        text-decoration: none; /* para que parezca botón si es enlace */
+        margin-top: 10px;
     }
 
     .boton-login:hover {
         background-color: #2e912b;
     }
 
-    /* Footer */
+    .error {
+        color: #ffb3b3;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+
     footer {
         margin-top: 20px;
         font-size: 14px;
         color: #c5e1a5;
     }
 
-    /* Animación */
-    @keyframes fadeIn {
-        from {opacity: 0; transform: translateY(20px);}
-        to {opacity: 1; transform: translateY(0);}
-    }
-
 </style>
 </head>
+
 <body>
 
     <div class="main-card">
         <h1>Frutería "El Divino Niño"</h1>
 
-        <!-- Imagen debajo del título -->
-        <img src="/static/logo.png" class="imagen-fruteria">
+        <img src="{{ url_for('static', filename='Logo.jpg') }}" class="imagen-fruteria">
 
-        
+        <form action="/login" method="post">
 
-        <!-- Botón que lleva a login tendero -->
-        <a href="login_tendero.html" class="boton-login">Ingresar</a>
+            <div class="input-wrapper">
+                <input type="text" name="usuario" placeholder="Usuario" required>
+            </div>
 
-        <footer>
-          © 2026 Frutería "El Divino Niño"  
-        </footer>
+            <div class="input-wrapper">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+
+            <button type="submit" class="boton-login">Ingresar</button>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <footer>© 2026 Frutería "El Divino Niño"</footer>
     </div>
 
 </body>
