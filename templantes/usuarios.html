@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Usuarios</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --verde-oscuro: #0f3d1e;
+    --verde-medio: #2e7d32;
+    --verde-claro: #cfe5d6;
+    --verde-hover: #1a5c2a;
+    --bg: #eaeaea;
+    --card-shadow: 0 2px 12px rgba(15,61,30,0.10);
+    --radius: 14px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'DM Sans', Arial, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+    background: var(--verde-oscuro);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 28px;
+    height: 62px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.header-usuario {
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+/* ── LAYOUT ── */
+.contenedor {
+    display: flex;
+    min-height: calc(100vh - 62px);
+}
+
+/* ── LISTA ── */
+.lista {
+    flex: 1;
+    display: flex;
+    gap: 18px;
+    padding: 28px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+/* ── CARD ── */
+.card {
+    width: 200px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 16px 14px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(15,61,30,0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(15,61,30,0.14);
+}
+
+.card-avatar {
+    width: 62px;
+    height: 62px;
+    background: var(--verde-claro);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.card-avatar img {
+    width: 36px;
+    opacity: 0.75;
+}
+
+.card-nombre {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--verde-oscuro);
+    margin-bottom: 12px;
+}
+
+.divider {
+    height: 1px;
+    background: var(--verde-claro);
+    margin: 10px 0;
+}
+
+/* ── PERMISOS ── */
+.permiso {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.permiso-titulo {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.permiso p {
+    font-size: 12px;
+    color: #b0b0b0;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.permiso p::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ddd;
+    flex-shrink: 0;
+}
+
+.permiso p.activo {
+    color: var(--verde-medio);
+    font-weight: 600;
+}
+
+.permiso p.activo::before {
+    background: var(--verde-medio);
+}
+
+/* ── CONTRASEÑA ── */
+.card-pass {
+    font-size: 11px;
+    color: #999;
+    font-family: 'DM Mono', monospace;
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── ACCIONES ── */
+.acciones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.btn-accion {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-accion.editar {
+    background: rgba(46,125,50,0.10);
+}
+.btn-accion.editar:hover {
+    background: rgba(46,125,50,0.22);
+}
+.btn-accion.eliminar {
+    background: rgba(200,30,30,0.08);
+}
+.btn-accion.eliminar:hover {
+    background: rgba(200,30,30,0.18);
+}
+
+.acciones img {
+    width: 18px;
+    cursor: pointer;
+}
+
+/* ── FORMULARIO ── */
+.formulario {
+    width: 290px;
+    min-width: 260px;
+    background: var(--verde-oscuro);
+    color: white;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.formulario h3 {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.formulario label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 6px;
+}
+
+.formulario input[type="text"],
+.formulario input[type="password"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.07);
+    color: white;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.formulario input[type="text"]:focus,
+.formulario input[type="password"]:focus {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.12);
+}
+
+/* ── PERMISOS RADIO ── */
+.permisos {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.permisos label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.10);
+    transition: background 0.15s;
+}
+
+.permisos label:hover {
+    background: rgba(255,255,255,0.07);
+}
+
+.permisos input[type="radio"] {
+    accent-color: #6dd97a;
+    width: 15px;
+    height: 15px;
+}
+
+/* ── BOTÓN GUARDAR ── */
+.guardar {
+    margin-top: 20px;
+    width: 100%;
+    padding: 11px;
+    background: var(--verde-medio);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: background 0.15s, transform 0.12s;
+}
+
+.guardar:hover {
+    background: var(--verde-hover);
+    transform: translateY(-1px);
+}
+
+.guardar:active {
+    transform: translateY(0);
+}
+
+/* ── REGRESAR ── */
+.regresar {
+    position: fixed;
+    bottom: 22px;
+    left: 22px;
+    background: var(--verde-oscuro);
+    border: none;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15,61,30,0.30);
+    transition: background 0.15s, transform 0.15s;
+}
+
+.regresar:hover {
+    background: var(--verde-hover);
+    transform: scale(1.07);
+}
+
+.regresar img {
+    width: 22px;
+    filter: brightness(10);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Usuarios</h1>
+    <div class="header-usuario">Administrador — {{ tipo_usuario }}</div>
+</div>
+
+<div class="contenedor">
+
+    <!-- LISTA USUARIOS -->
+    <div class="lista">
+
+        {% for user in usuarios %}
+        <div class="card">
+
+            <div class="card-avatar">
+                <img src="/static/user.png">
+            </div>
+
+            <p class="card-nombre">{{ user.nombre }}</p>
+
+            <div class="divider"></div>
+
+            <div class="permiso">
+                <p class="permiso-titulo">Permisos</p>
+
+                <p class="{{ 'activo' if user.rol == 'admin' else '' }}">
+                    Administrador
+                </p>
+                <p class="{{ 'activo' if user.rol == 'gerente' else '' }}">
+                    Gerente
+                </p>
+                <p class="{{ 'activo' if user.rol == 'empleado' else '' }}">
+                    Empleado
+                </p>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="card-pass">{{ user.password }}</div>
+
+            <div class="acciones">
+                <div class="btn-accion editar">
+                    <img src="/static/editar.png">
+                </div>
+                <div class="btn-accion eliminar">
+                    <img src="/static/eliminar.png">
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="formulario">
+
+        <h3>Registrar Usuario</h3>
+
+        <form method="POST" action="/agregar_usuario">
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label>Permisos</label>
+                <div class="permisos">
+                    <label><input type="radio" name="rol" value="empleado"> Empleado</label>
+                    <label><input type="radio" name="rol" value="gerente"> Gerente</label>
+                    <label><input type="radio" name="rol" value="admin"> Administrador</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="text" name="password" required>
+            </div>
+
+            <button class="guardar">Guardar</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- REGRESAR -->
+<button class="regresar" onclick="regresar()">
+    <img src="/static/atrass.png">
+</button>
+
+<script>
+function regresar() {
+    window.location.href = "/login_adm";
+}
+</script>
+
+</body>
+</html>
