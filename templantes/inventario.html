@@ -174,10 +174,12 @@
     </div>
 
     <!-- BOTÓN DE AGREGAR PRODUCTOS -->
-    <a href="agregarproductos.html" class="boton-agregar">
+    {% if tipo_usuario == "admin" %}
+    <a href="/agregar_producto" class="boton-agregar">
         <img src="/static/agregar.png">
         <span>Agregar Producto</span>
     </a>
+    {% endif %}
 
 </div>
 
@@ -220,9 +222,9 @@
         <button class="mostrar">MOSTRAR TODO</button>
 
         <!-- BOTÓN REGRESAR -->
-        <button class="regresar" onclick="regresar()">
+       <button class="regresar" onclick="regresar()">
             <img src="/static/atrass.png">
-        </button>
+       </button>
 
     </div>
 
@@ -264,6 +266,19 @@
     </div>
 
 </div>
+<!-- Para redirigir al menú principal de acuerdo a la sesión -->
+ <script>
+function regresar() {
+    let tipo = "{{ tipo_usuario }}";
 
+    if (tipo === "admin") {
+        window.location.href = "{{ url_for('login_admin') }}";
+    } else if (tipo === "empleado") {
+        window.location.href = "{{ url_for('login_empleado') }}";
+    } else if (tipo === "gerente") {
+        window.location.href = "{{ url_for('login_gerente') }}";
+    }
+}
+</script>
 </body>
 </html>
