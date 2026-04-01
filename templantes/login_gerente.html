@@ -28,7 +28,58 @@ body {
     padding: 20px 50px;
     font-size: 22px;
 }
+/* mejora del header */
+.header {
+    background: #0b3d0b;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 40px;
+    font-size: 18px;
+}
 
+/* nombre sistema */
+.logo-header {
+    font-weight: 600;
+}
+
+/* zona usuario */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* nombre usuario */
+.user-name {
+    font-weight: 500;
+}
+
+/* botón cerrar sesión */
+.btn-logout {
+    background: #37e031;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(55,224,49,0.3);
+}
+
+/* hover */
+.btn-logout:hover {
+    background: #2e912b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(55,224,49,0.4);
+}
+
+/* click */
+.btn-logout:active {
+    transform: scale(0.95);
+}
 /* contenedor principal */
 .container {
     width: 100%;
@@ -166,9 +217,16 @@ body {
 
 <!-- header -->
 <div class="header">
-    <div>🍃 el divino niño</div>
+
+    <div class="logo-header">🍃 el divino niño</div>
+
     <div id="fecha"></div>
-    <div>Gerente🟢</div>
+
+    <div class="user-section">
+        <span class="user-name">Gerente 🟢</span>
+        <a href="/logout" class="btn-logout">Cerrar sesión</a>
+    </div>
+
 </div>
 
 <!-- contenido -->
@@ -178,7 +236,7 @@ body {
         <div class="logo-box">
             <div class="logo"></div>
             <div class="title">
-                el <span>divino niño</span>
+                El <span>Divino Niño</span>
             </div>
         </div>
 
@@ -188,22 +246,22 @@ body {
     <div class="line"></div>
 
     <div class="modulos-title">
-        selecciona un <span>módulo</span>
+        Selecciona un <span>módulo</span>
     </div>
 
     <div class="modulos">
 
-        <a href="ventas.html" class="card">
+        <a href="ventas" class="card">
             <img src="../static/ventas.png" class="icono-img">
             <p>Ventas</p>
         </a>
 
-        <a href="inventario.html" class="card">
+        <a href="inventario" class="card">
             <img src="../static/inventario.png" class="icono-img">
             <p>Inventario</p>
         </a>
 
-        <a href="gastos.html" class="card">
+        <a href="gastos" class="card">
             <img src="../static/gastos.png" class="icono-img">
             <p>Gastos</p>
         </a>
