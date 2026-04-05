@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>inicio - el divino niño</title>
+
+<!-- fuente que utilizamos para la letra -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+
+/* estilo general  */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #e6e2d3;
+    padding-bottom: 60px;
+}
+
+/* header */
+.header {
+    background: #0b3d0b;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+    font-size: 22px;
+}
+/*para el boton de cerrar sesion  */
+/* zona usuario (alineación) */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* nombre del usuario */
+.user-name {
+    font-weight: 500;
+}
+
+/* botón cerrar sesión */
+.btn-logout {
+    background: #37e031;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(55,224,49,0.3);
+}
+
+/* hover */
+.btn-logout:hover {
+    background: #2e912b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(55,224,49,0.4);
+}
+
+/* click */
+.btn-logout:active {
+    transform: scale(0.95);
+}
+/* contenedor principal */
+.container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px;
+    box-sizing: border-box;
+    background: #e9e5d6;
+}
+
+/* parte superior de color verde */
+.top-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* logo + titulo */
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* logo */
+.logo {
+    width: 180px;
+    height: 140px;
+    border-radius: 20px;
+    background-image: url('../static/logo.png');
+    background-size: cover;
+    background-position: center;
+}
+
+/* titulo */
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 55px;
+}
+
+.title span {
+    color: #2e8b57;
+}
+
+/* turno */
+.turno {
+    background: #cde3d4;
+    padding: 20px 40px;
+    border-radius: 20px;
+    border: 3px solid #0b3d0b;
+    font-size: 22px;
+}
+
+/* linea */
+.line {
+    margin: 35px 0;
+    border-top: 3px solid #0b3d0b;
+}
+
+/* titulo modulos */
+.modulos-title {
+    text-align: center;
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+.modulos-title span {
+    color: #2e8b57;
+}
+
+/* contenedor modulos */
+.modulos {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* tarjetas grandes tipo POS */
+.card {
+    width: 220px;
+    height: 180px;
+    background: #dbe8df;
+    border-radius: 20px;
+    border: 3px solid #0b3d0b;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    color: black;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* hover */
+.card:hover {
+    transform: scale(1.1);
+    background: #cde3d4;
+}
+
+/* iconos grandes */
+.icono-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.3));
+}
+
+/* texto */
+.card p {
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 22px;
+}
+
+/* footer fijo */
+.footer {
+    height: 60px;
+    background: #0b3d0b;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+/* */
+/* contenedor del titulo con imagen */
+.title-box{
+    display: flex;
+    align-items: left;
+    gap: 40px;
+}
+
+/* imagen del titulo */
+.logo-title{
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
+</style>
+</head>
+
+<body>
+
+<!-- header -->
+<div class="header">
+
+    <div class="logo-header">🍃 El divino niño</div>
+
+    <div id="fecha"></div>
+
+    <div class="user-section">
+        <span class="user-name">Administrador 🟢</span>
+        <a href="/logout" class="btn-logout">Cerrar sesión</a>
+    </div>
+
+</div>
+
+<!-- contenido -->
+<div class="container">
+
+    <div class="top-section">
+        <div class="logo-box">
+            <div class="logo"></div>
+            <div class="title-box">
+            <div class="title">
+            El <span>Divino Niño</span>
+    </div>
+</div>
+        </div>
+
+        <div class="turno" id="turno"></div>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="modulos-title">
+        Selecciona un <span>módulo</span>
+    </div>
+
+    <div class="modulos">
+
+        <a href="/ventas" class="card">
+            <img src="../static/ventas.png" class="icono-img">
+            <p>Ventas</p>
+        </a>
+
+        <a href="/inventario" class="card">
+            <img src="../static/inventario.png" class="icono-img">
+            <p>Inventario</p>
+        </a>
+
+        <a href="/gastos" class="card">
+            <img src="../static/gastos.png" class="icono-img">
+            <p>Gastos</p>
+        </a>
+
+        <a href="/caja" class="card">
+            <img src="../static/caja.png" class="icono-img">
+            <p>Caja</p>
+        </a>
+
+        <a href="/usuarios" class="card">
+            <img src="../static/usuarios.png" class="icono-img">
+            <p>Usuarios</p>
+
+        </a>
+       
+    </div>
+
+</div>
+
+<!-- footer -->
+<div class="footer"></div>
+
+<script>
+
+/* fecha automatica */
+const fechaElemento = document.getElementById("fecha");
+const hoy = new Date();
+
+const opciones = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+};
+
+fechaElemento.textContent = hoy.toLocaleDateString('es-ES', opciones);
+
+/* turno automatico */
+const turnoElemento = document.getElementById("turno");
+const hora = hoy.getHours();
+
+let turnoTexto = "";
+
+if (hora >= 6 && hora < 12) {
+    turnoTexto = "turno matutino";
+} else if (hora >= 12 && hora < 18) {
+    turnoTexto = "turno vespertino";
+} else {
+    turnoTexto = "turno nocturno";
+}
+
+turnoElemento.textContent = turnoTexto;
+
+</script>
+
+</body>
+</html>

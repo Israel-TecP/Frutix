@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+
+    <style>
+        /* ===== GENERAL ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #eaeaea;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: #1f5c2e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+        }
+
+        .titulo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .titulo img {
+            width: 40px;
+        }
+
+        /* ===== BOTÓN AGREGAR ===== */
+        .boton-agregar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            background: #2e7d32;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .boton-agregar:hover {
+            background: #256628;
+        }
+
+        /* 👇 AQUÍ CAMBIAS EL TAMAÑO DE LA IMAGEN */
+        .boton-agregar img {
+            width: 25px;
+            height: 25px;
+        }
+
+        /* ===== CONTENEDOR ===== */
+        .contenedor {
+            flex: 1;
+            display: flex;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 220px;
+            background: #0f3d1e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .categoria {
+            width: 100%;
+            background: #d7f0dc;
+            border-radius: 15px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .categoria img {
+            width: 45px;
+        }
+
+        .mostrar {
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Botón regresar */
+        .regresar {
+            margin-top: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .regresar img {
+            width: 35px;
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .buscador {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .buscador input {
+            padding: 8px;
+            border-radius: 20px;
+            border: 1px solid #aaa;
+        }
+
+        .tabla {
+            background: #cfe5d6;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .tabla-scroll {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 2px solid #3b6b4a;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #b8d8c3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <div class="titulo">
+            <h1>Inventario</h1>
+            <img src="/static/inventario.png">
+        </div>
+
+        <!-- BOTÓN DE AGREGAR PRODUCTOS -->
+        <a href="agregarproductos.html" class="boton-agregar">
+            <img src="/static/agregar.png">
+            <span>Agregar Producto</span>
+        </a>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="contenedor">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+
+            <button class="categoria">
+                <a href="/inventario?categoria=1">
+                    <img src="/static/frutas.png">
+                    <div>Frutas</div>
+                </a>
+            </button>
+
+            <button class="categoria">
+                <a href="/inventario?categoria=2">
+                    <img src="/static/verduras.png">
+                    <div>Verduras</div>
+                </a>
+            </button>
+
+            <button class="categoria">
+                <a href="/inventario?categoria=3">
+                    <img src="/static/abarrotes.png">
+                    <div>Abarrotes</div>
+                </a>
+            </button>
+
+            <button class="categoria">
+                <a href="/inventario?categoria=4">
+                    <img src="/static/carne.png">
+                    <div>Carnes</div>
+                </a>
+            </button>
+
+            <button class="categoria">
+                <a href="/inventario?categoria=5">
+                    <img src="/static/condimentos.png">
+                    <div>Condimentos</div>
+                </a>
+            </button>
+
+
+            <button class="categoria">
+                <a href="/inventario?categoria=6">
+                    <img src="/static/dulces.png">
+                    <div>Dulces</div>
+                </a>
+
+            </button>
+
+            <a href="/inventario">
+                <button class="mostrar">MOSTRAR TODO</button>
+            </a>
+
+            <!-- BOTÓN REGRESAR -->
+            <button class="regresar" onclick="regresar()">
+                    <img src="/static/atrass.png">
+            </button>
+
+
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+
+            <div class="buscador">
+                <input type="text" placeholder="Buscar producto...">
+            </div>
+
+            <div class="tabla">
+
+                <div class="tabla-scroll">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estado</th>
+                                <th>Nombre</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Tipo venta</th>
+                                <th>Merma</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                 {% for producto in Inventario %}
+                            <tr>
+                                <td>{{ producto[0] }}</td>
+                                <td>{{ producto[1] }}</td>
+                                <td>{{ producto[2] }}</td>
+                                <td>{{ producto[3] }}</td>
+                                <td>{{ producto[6] }}</td>
+                                <td>{{ producto[4] }}</td>
+                                <td>
+                                    <a href="editar.html?id={{ producto[6] }}" class="boton-editar">
+                                        <img src="/static/editar.png" style="width:25px; height:25px;">
+                                    </a>
+                                    <a href="eliminar.html?id={{ producto[6] }}" class="boton-eliminar">
+                                        <img src="/static/eliminar.png" style="width:25px; height:25px;">
+                                    </a>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% if not Inventario %}
+                            <tr>
+                                <td colspan="7">No hay productos registrados</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+<script>
+    function regresar() {
+            let tipo = "{{ session.get('rol') }}";
+            console.log(tipo);
+            if (tipo === "1") {
+                window.location.href = "/login_adm";
+            }
+            else if (tipo === "2") {
+                window.location.href = "/login_gerente";
+            }
+            else {
+                window.location.href = "/login_empleado";
+            }
+        }
+</script>
+</body>
+
+</html>
