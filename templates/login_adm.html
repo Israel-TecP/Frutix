@@ -28,7 +28,43 @@ body {
     padding: 20px 50px;
     font-size: 22px;
 }
+/*para el boton de cerrar sesion  */
+/* zona usuario (alineación) */
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
 
+/* nombre del usuario */
+.user-name {
+    font-weight: 500;
+}
+
+/* botón cerrar sesión */
+.btn-logout {
+    background: #37e031;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(55,224,49,0.3);
+}
+
+/* hover */
+.btn-logout:hover {
+    background: #2e912b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(55,224,49,0.4);
+}
+
+/* click */
+.btn-logout:active {
+    transform: scale(0.95);
+}
 /* contenedor principal */
 .container {
     width: 100%;
@@ -158,7 +194,20 @@ body {
     left: 0;
     width: 100%;
 }
+/* */
+/* contenedor del titulo con imagen */
+.title-box{
+    display: flex;
+    align-items: left;
+    gap: 40px;
+}
 
+/* imagen del titulo */
+.logo-title{
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+}
 </style>
 </head>
 
@@ -166,9 +215,16 @@ body {
 
 <!-- header -->
 <div class="header">
-    <div>🍃 el divino niño</div>
+
+    <div class="logo-header">🍃 el divino niño</div>
+
     <div id="fecha"></div>
-    <div>Administrador🟢</div>
+
+    <div class="user-section">
+        <span class="user-name">Administrador 🟢</span>
+        <a href="/logout" class="btn-logout">Cerrar sesión</a>
+    </div>
+
 </div>
 
 <!-- contenido -->
@@ -177,9 +233,11 @@ body {
     <div class="top-section">
         <div class="logo-box">
             <div class="logo"></div>
+            <div class="title-box">
             <div class="title">
-                el <span>divino niño</span>
-            </div>
+            El <span>Divino Niño</span>
+    </div>
+</div>
         </div>
 
         <div class="turno" id="turno"></div>
@@ -188,37 +246,37 @@ body {
     <div class="line"></div>
 
     <div class="modulos-title">
-        selecciona un <span>módulo</span>
+        Selecciona un <span>módulo</span>
     </div>
 
     <div class="modulos">
 
-        <a href="ventas.html" class="card">
+        <a href="ventas" class="card">
             <img src="../static/ventas.png" class="icono-img">
             <p>Ventas</p>
         </a>
 
-        <a href="inventario.html" class="card">
+        <a href="inventario" class="card">
             <img src="../static/inventario.png" class="icono-img">
             <p>Inventario</p>
         </a>
 
-        <a href="gastos.html" class="card">
+        <a href="gastos" class="card">
             <img src="../static/gastos.png" class="icono-img">
             <p>Gastos</p>
         </a>
 
-        <a href="caja.html" class="card">
+        <a href="caja" class="card">
             <img src="../static/caja.png" class="icono-img">
             <p>Caja</p>
         </a>
 
-        <a href="usuarios.html" class="card">
+        <a href="usuarios" class="card">
             <img src="../static/usuarios.png" class="icono-img">
             <p>Usuarios</p>
 
         </a>
-
+       
     </div>
 
 </div>

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-
+from flask import Flask, render_template, request, redirect, session, jsonify
+ 
 app = Flask(__name__)
 
 import pymysql  # pymysql es una biblioteca de Python puro para conectarse a bases de datos MySQL y MariaDB.
@@ -18,7 +18,7 @@ def inicio():
 
 @app.route('/login_adm')
 def login_admin():
-    return render_template('login_admin.html')
+    return render_template('login_adm.html')
 
 @app.route('/login_empleado')
 def login_empleado():
@@ -28,6 +28,8 @@ def login_empleado():
 def login_gerente():
     return render_template('login_gerente.html')
 
+#------------------------INVENTARIO-------------------------------
+#Dependiendo de la sesión
 @app.route('/inventario')
 def inventario():
     cur = conn.cursor()
