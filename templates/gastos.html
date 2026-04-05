@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastos</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            background: #eaeaea;
+        }
+
+        /* HEADER */
+        .header {
+            background: #1f5c2e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+        }
+
+        .titulo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .titulo h1 {
+            font-size: 40px;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* CONTENIDO */
+        .contenedor {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* TABLA */
+        .tabla {
+            width: 50%;
+            background: #cfe5d6;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .tabla h3 {
+            margin-bottom: 10px;
+        }
+
+        .tabla-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 2px solid #3b6b4a;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #b8d8c3;
+        }
+
+        /* FORMULARIO */
+        .formulario {
+            position: fixed;
+            right: 2%;
+            width: 45%;
+            background: #cfe5d6;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .formulario h3 {
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #aaa;
+            text-align: center;
+        }
+
+        /* BOTÓN */
+        .boton {
+            background: #2e7d32;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .boton:hover {
+            background: #256628;
+        }
+
+        /* BOTÓN REGRESAR */
+        .regresar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .regresar img {
+            width: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="titulo">
+            <h1>Gastos</h1>
+            <img src="/static/gastos.png" width="40">
+        </div>
+
+        <div class="usuario">
+            <span>{{ tipo_usuario }}</span>
+            <img src="/static/user.png" width="35">
+        </div>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="contenedor">
+
+        <!-- TABLA -->
+        <div class="tabla">
+            <h3>Gastos:</h3>
+
+            <div class="tabla-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for gasto in gastos %}
+                        <tr>
+                            <td>{{ gasto[1] }}</td>
+                            <td>{{ gasto[2] }}</td>
+                            <td>{{ gasto[3] }}</td>
+                            <td>{{ gasto[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FORMULARIO -->
+         <form action="/Agregar_gasto" method="post">
+        <div class="formulario">
+            <h3>Agregar Gastos:</h3>
+
+            <div class="form-group">
+                <label>Concepto:</label>
+                <input type="text" name="concepto" placeholder="Ej: Basura" required>
+            </div>
+
+            <div class="form-group">
+                <label>Monto:</label>
+                <input type="number" name="monto" min="0" step="0.50" placeholder="Ej: 1500" required>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha:</label>
+                <input type="date" name="fecha" required>
+            </div>
+
+            <div class="form-group">
+                <label>Hora:</label>
+                <input type="time" name="hora" required>
+            </div>
+
+            <button type="submit"class="boton">Agregar</button>
+        </div>
+        </form>
+
+    </div>
+
+    <!-- BOTÓN REGRESAR -->
+    <button class="regresar" onclick="regresar()">
+        <img src="/static/atrass.png">
+    </button>
+
+    <script>
+        function regresar() {
+            let tipo = "{{ session.get('rol') }}";
+            console.log(tipo);
+            if (tipo === "1") {
+                window.location.href = "/login_adm";
+            }
+            else if (tipo === "2") {
+                window.location.href = "/login_gerente";
+            }
+            else {
+                window.location.href = "/login_empleado";
+            }
+        }
+    </script>
+
+</body>
+
+</html>

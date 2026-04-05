@@ -241,9 +241,7 @@
 
             <!-- BOTÓN REGRESAR -->
             <button class="regresar" onclick="regresar()">
-                <a href="/">
                     <img src="/static/atrass.png">
-                </a>
             </button>
 
 
@@ -308,7 +306,21 @@
         </div>
 
     </div>
-
+<script>
+    function regresar() {
+            let tipo = "{{ session.get('rol') }}";
+            console.log(tipo);
+            if (tipo === "1") {
+                window.location.href = "/login_adm";
+            }
+            else if (tipo === "2") {
+                window.location.href = "/login_gerente";
+            }
+            else {
+                window.location.href = "/login_empleado";
+            }
+        }
+</script>
 </body>
 
 </html>
