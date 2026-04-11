@@ -183,14 +183,13 @@
                         <!-- CATEGORIAS -->
                         <div class="categorias">
                             <strong>Categoría</strong>
-
                             <button type="button" onclick="filtrar('todas')">Todas</button>
                             <button type="button" onclick="filtrar('1')">Frutas</button>
                             <button type="button" onclick="filtrar('2')">Verduras</button>
-                            <button type="button" onclick="filtrar('3')">Carne</button>
-                            <button type="button" onclick="filtrar('4')">Abarrotes</button>
-                            <button type="button" onclick="filtrar('5')">Condimentos</button>
-                            <button type="button" onclick="filtrar('6')">Dulces</button>
+                            <button type="button" onclick="filtrar('6')">Carne</button>
+                            <button type="button" onclick="filtrar('3')">Abarrotes</button>
+                            <button type="button" onclick="filtrar('4')">Condimentos</button>
+                            <button type="button" onclick="filtrar('5')">Dulces</button>
                         </div>
 
                         <!-- PRODUCTOS -->
@@ -226,7 +225,7 @@
                         <p><strong>Total:</strong> $<span id="total">0</span></p>
                         <input type="hidden" name="total_venta" id="total_venta">
 
-                        <input type="number" id="efectivo" placeholder="Efectivo">
+                        <input type="number" onkeydown="if(event.key==='e'||event.key==='E') event.preventDefault();" id="efectivo" placeholder="Efectivo" min="1" max="9999" maxlength="4" required>
 
                         <p><strong>Cambio:</strong> $<span id="cambio">0</span></p>
 
@@ -313,24 +312,24 @@
 
 
         // ===== TOTAL =====
-        const listaProductos = JSON.parse('{{ productos | tojson }}');
-        const totalLabel = document.getElementById("total");
+        const listaProductos = JSON.parse('{{ productos | tojson }}'); // Los productos se pasan a un script JavaScript como un arreglo de objetos
+        const totalLabel = document.getElementById("total"); // Obteniendo el elemento donde se muestra el total
 
-        function calcularTotal() {
+        function calcularTotal() { // La funcion calcularTotal recorre el arreglo de las cantidades seleccionadas de productos.
             let total = 0;
 
-            Object.keys(cantidades).forEach(id => {
-                let cantidad = parseFloat(cantidades[id]) || 0;
+            Object.keys(cantidades).forEach(id => { // Por cada producto seleccionado obtiene la cantidad como objeto
+                let cantidad = parseFloat(cantidades[id]) || 0; // Si la cantidad no es un número válido, se considera como 0, si no convierte el numero a decimal.
 
-                let producto = listaProductos.find(p => p[0] == id);
+                let producto = listaProductos.find(p => p[0] == id); // Busca el producto correspondiente en la lista de productos utilizando su ID.
 
-                if (producto && cantidad > 0) {
-                    total += producto[3] * cantidad;
+                if (producto && cantidad > 0) { // Si el producto existe y la cantidad es mayor a 0,
+                    total += producto[3] * cantidad; // se calcula el total multiplicando el precio del producto por la cantidad seleccionada y se suma al total general.
                 }
             });
 
-            document.getElementById("total").textContent = total.toFixed(2);
-            validarPago();
+            document.getElementById("total").textContent = total.toFixed(2); // Finalmente, el total se muestra en el elemento correspondiente con dos decimales.
+            validarPago(); // Se llama a la función validarPago para actualizar el estado del botón de confirmación y el cambio cada vez que se recalcula el total.
         }
 
         // ===== CAMBIO =====
@@ -359,10 +358,6 @@
 
         document.getElementById("cambio").textContent =
             (!isNaN(e) && e >= t) ? (e - t).toFixed(2) : "0";
-
-
-
-
 
         // regresar dependiendo del rol
         function regresar() {
