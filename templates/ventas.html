@@ -201,6 +201,7 @@
                                 <input type="hidden" name="producto_venta" value="{{ producto[1] }}">
                                 <strong>{{ producto[1] }}</strong>
                                 <p>$ {{ producto[3] }}</p>
+                                <p style="height: 5px; margin-top: 0px;">Disponibles: {{ producto[2]}}</p>
                                 <input type="hidden" name="Cantidad" value="{{ producto[3] }}">
                                 <input type="number" name="productos[{{ producto[0] }}]" data-id="{{ producto[0] }}"
                                     min="0" max="{{ producto[2] }}" value="0">

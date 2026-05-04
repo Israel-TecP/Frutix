@@ -132,6 +132,12 @@
             border-radius: 20px;
             cursor: pointer;
         }
+
+        .error {
+        color: #ffb3b3;
+        margin-top: 10px;
+        font-size: 14px;
+        }
     </style>
 </head>
 
@@ -141,10 +147,14 @@
         <h1>Agregar Producto</h1>
     </div>
 
+    {% if error %}
+            <p class="error">{{ error }}</p>
+     {% endif %}
+
     <div class="contenedor">
 
         <!-- FORM -->
-        <form action="/agregarproductos.html" method="POST">
+        <form action="/agregarproductos.html" method="POST" enctype="multipart/form-data">
             <div class="form">
                 <label>Nombre del producto:</label>
                 <input type="text" name="nombre" maxlength="20" required>
@@ -166,6 +176,12 @@
                 <label>Merma:</label>
                 <input type="number" name="merma" min="0" max="99" maxlength="2" required>
                 <input type="hidden" name="categoria" id="categoriaSeleccionada">
+
+                <div class="mb-3">
+                    <input type="file" id="Imagen" name="Imagen" accept="image/*" onchange="previewImage(event)">
+                    <img id="preview" width="150" style="display:none; margin-top:10px;">
+                </div>
+
                 <button type="submit" class="btn btn-success w-100">Guardar Producto</button>
             </div>
 
@@ -218,6 +234,17 @@
     </button>
 
     <script>
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        }
+
         document.querySelectorAll(".cat").forEach(cat => {
             cat.addEventListener("click", () => {
                 document.querySelectorAll(".cat").forEach(c => c.classList.remove("activa"));
