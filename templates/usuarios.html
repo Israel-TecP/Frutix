@@ -384,7 +384,7 @@
             <div class="card">
 
                 <div class="card-avatar">
-                    <img src="/static/{{ user[1] }}.png">
+                    <img src="/static/uploads/{{ user[1] }}.png">
                 </div>
 
                 <p class="card-nombre">{{ user[1] }}</p>
@@ -404,7 +404,8 @@
                         <input type="hidden" name="ID_usuario" value="{{ user[0] }}">
                         {% for id, nombre in roles %}
                         <label>
-                            <input name="Permisos" type="radio" value="{{ id }}" {% if user[3]|string == id %} checked {% endif %}>
+                            <input name="Permisos" type="radio" value="{{ id }}" {% if user[3]|string==id %} checked {%
+                                endif %}>
                             {{ nombre }}
                         </label> <br>
                         {% endfor %}
@@ -422,10 +423,10 @@
                     </button>
                     </form>
                     <form action="/Eliminar_usuario" method="post">
-                    <input type="hidden" name="ID_usuario" value="{{ user[0] }}">
-                    <button type="submit" class="btn-accion eliminar">
-                        <img src="/static/eliminar.png">
-                    </button>
+                        <input type="hidden" name="ID_usuario" value="{{ user[0] }}">
+                        <button type="submit" class="btn-accion eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario? esta accion no se puede revertir')">
+                            <img src="/static/eliminar.png">
+                        </button>
                     </form>
                 </div>
             </div>
@@ -440,7 +441,7 @@
 
             <h3>Registrar Usuario</h3>
 
-            <form method="POST" action="/Agregar_usuarios">
+            <form method="POST" action="/Agregar_usuarios" enctype="multipart/form-data">
 
                 <div class="form-group">
                     <label>Nombre</label>
@@ -461,7 +462,13 @@
                     <input type="text" name="password" required>
                 </div>
 
-                <button type="submit" class="guardar">Guardar</button>
+                <div class="mb-3">
+                    <input type="file" id="Imagen" name="Imagen" accept="image/*" onchange="previewImage(event)">
+
+                    <img id="preview" width="150" style="display:none; margin-top:10px;">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar</button>
 
             </form>
 
@@ -475,6 +482,17 @@
     </button>
 
     <script>
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        }
+
         function regresar() {
             window.location.href = "/login_adm";
         }

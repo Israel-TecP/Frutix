@@ -7,7 +7,10 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 # pymysql es una biblioteca de Python puro para conectarse a bases de datos MySQL y MariaDB.
 # Esta libreria no requiere de extenciones de C, haciendolo sensillo de instalar 
-import pymysql  
+import pymysql
+
+from werkzeug.utils import secure_filename  
+import os
  
 app = Flask(__name__) # Crea la instancia de flask, necesario para determinar la ubicación de los recursos del proyecto
 
@@ -160,6 +163,27 @@ def eliminar_producto():
         conn.commit()
     return redirect('/inventario')
 
+@app.route("/BuscarProd", methods=['POST'])
+def Buscar_Producto():
+    Nombre_Producto = request.form['Buscar']
+    busca = f"%{Nombre_Producto}%"
+    if request.method == 'POST':
+        conn = Conexion()
+        with conn.cursor() as cur:
+            cur.execute("""SELECT \"Activo\" AS ESTADO, p.nombre, p.cantidad, p.precio, p.merma, p.categoria, e.nombre_embolsado AS Tipo_Venta, p.codigo 
+                FROM frutix.embolsado e 
+                JOIN frutix.mm_prodtip pr ON pr.ID_embolsado = e.id_em
+                JOIN frutix.productos p on pr.ID_producto = p.codigo
+                WHERE p.estado = 'Activo' AND p.nombre LIKE %s""", (busca)) 
+        
+        Filtro = cur.fetchall()
+    return render_template('inventario.html', Inventario=Filtro)
+
+EXTENSIONESPROD = {'png', 'jpg'}
+
+def ArchivoPermitido(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in EXTENSIONESPROD
+    
 @app.route('/agregarproductos.html', methods=['GET', 'POST'])
 def agregar_producto():
     conn = Conexion()
@@ -170,6 +194,16 @@ def agregar_producto():
         merma = request.form['merma'] # Obtiene los datos del formulario para agregar el producto nuevo a la base de datos
         categoria = request.form['categoria']
         tipo_venta = request.form['tipo_venta']
+        
+        foto = request.files.get('Imagen')
+
+        if foto and ArchivoPermitido(foto.filename):
+            extension = foto.filename.rsplit('.', 1)[1].lower()
+            nombre_archivo = secure_filename(f"{nombre}.{extension}")
+            ruta = os.path.join("static", nombre_archivo)
+            foto.save(ruta)
+        else:
+            return render_template('agregarproductos.html', error='Archivo no permitido')
 
         with conn.cursor() as cur:
             cur.execute("INSERT INTO productos (Nombre, precio, cantidad, merma, categoria) VALUES (%s, %s, %s, %s, %s)",
@@ -178,6 +212,7 @@ def agregar_producto():
             cur.execute("INSERT INTO mm_prodtip (ID_producto, ID_embolsado) VALUES (%s, %s)",
                         (producto_id, tipo_venta))
             conn.commit()
+               
     return render_template('agregarproductos.html') 
 
 
@@ -309,6 +344,11 @@ def usuarios():
     Usuarios = cur.fetchall()                                         # se muestra toda la informacion de los usuarios para que se puedan modificar o eliminar.
     return render_template('usuarios.html', usuarios=Usuarios)
 
+EXTENSIONES = {'png', 'jpg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in EXTENSIONES
+
 @app.route('/Agregar_usuarios', methods=['POST'])
 def Agregar_usuarios():
     conn = Conexion()
@@ -318,6 +358,16 @@ def Agregar_usuarios():
     with conn.cursor() as cur:
         cur.execute("INSERT INTO usuarios (Nombre, Contraseña, Rol) VALUES (%s, %s, %s)", (Nombre, Contraseña, Rol))
         conn.commit() # Ingresa el usuario a la base de datos y confirma la transaccion para guardar los cambios realizados.
+           
+    foto = request.files.get('Imagen')
+
+    if foto and allowed_file(foto.filename):
+        extension = foto.filename.rsplit('.', 1)[1].lower()
+        nombre_archivo = secure_filename(f"{Nombre}.{extension}")
+        ruta = os.path.join("static/uploads", nombre_archivo)
+        foto.save(ruta)
+    else:
+        print("Archivo no permitido")
     return redirect('/usuarios')
 
 @app.route('/Modificar_usuarios', methods=['POST'])

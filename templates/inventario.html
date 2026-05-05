@@ -66,7 +66,6 @@
             background: #256628;
         }
 
-        /* 👇 AQUÍ CAMBIAS EL TAMAÑO DE LA IMAGEN */
         .boton-agregar img {
             width: 25px;
             height: 25px;
@@ -252,7 +251,10 @@
         <div class="main">
 
             <div class="buscador">
-                <input type="text" placeholder="Buscar producto...">
+                <form action="/BuscarProd" method="post">
+                    <input type="text" name="Buscar" ID="Buscar" placeholder="Buscar producto por nombre...">
+                    <button type="submit">Buscar</button>
+                </form>
             </div>
 
             <div class="tabla">
@@ -354,7 +356,7 @@
                                         </div>
                                         <form action="/Eliminar_producto" method="post">
                                             <input type="hidden" name="ID" value="{{ producto[7] }}">
-                                    <button type="submit" class="boton-eliminar">
+                                    <button type="submit" class="boton-eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                                         <img src="/static/eliminar.png" style="width:25px; height:25px;">
                                     </button>
                                     </form>
