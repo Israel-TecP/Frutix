@@ -7,7 +7,10 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin, current_user
 # pymysql es una biblioteca de Python puro para conectarse a bases de datos MySQL y MariaDB.
 # Esta libreria no requiere de extenciones de C, haciendolo sensillo de instalar 
-import pymysql  
+import pymysql
+
+from werkzeug.utils import secure_filename  
+import os
  
 app = Flask(__name__) # Crea la instancia de flask, necesario para determinar la ubicación de los recursos del proyecto
 
@@ -116,12 +119,13 @@ def inventario():
     conn = Conexion()
     cur = conn.cursor()
     categoria = request.args.get('categoria') # Obtiene la categoria seleccionada por el usuario para filtrar los productos,
-    consulta = """SELECT \"Activo\" AS ESTADO, p.nombre, p.cantidad, p.precio, p.merma, p.categoria, e.nombre_embolsado AS Tipo_Venta 
+    consulta = """SELECT \"Activo\" AS ESTADO, p.nombre, p.cantidad, p.precio, p.merma, p.categoria, e.nombre_embolsado AS Tipo_Venta, p.codigo 
                 FROM frutix.embolsado e 
                 JOIN frutix.mm_prodtip pr ON pr.ID_embolsado = e.id_em
-                JOIN frutix.productos p on pr.ID_producto = p.codigo"""
+                JOIN frutix.productos p on pr.ID_producto = p.codigo
+                WHERE p.estado = 'Activo'""" # Consulta para obtener la informacion de los productos del inventario, mostrando solo los productos activos, ademas de mostrar su tipo de venta usando un JOIN con las tablas mm_prodtip y embolsado.
     if categoria: # En caso de que se seleccione una categoria se agrega la clausula WHERE, sirviendo para filtrar los productos.
-        consulta += " WHERE p.categoria = %s"
+        consulta += " AND p.categoria = %s"
         cur.execute(consulta, (categoria,))
     else:
         cur.execute(consulta) # En caso de que se seleccione la opcion de "Mostrar todo" se ejecuta la consulta sin la clausula.
@@ -130,6 +134,56 @@ def inventario():
     
     return render_template('inventario.html', Inventario=inventario)
 
+@app.route('/Modificar_producto', methods=['POST'])
+def modificar_producto():
+    conn = Conexion()
+    if request.method == 'POST':
+        id_producto = request.form['ID'] # Obtiene los datos del formulario para modificar el producto seleccionado en la base de datos.
+        nombre = request.form['nombre']
+        precio = float(request.form['precio'])
+        cantidad = request.form['cantidad']
+        merma = request.form['merma']
+        categoria = request.form['categoria']
+        tipo_venta = request.form['unidad']
+
+        with conn.cursor() as cur:
+            cur.execute("UPDATE productos SET Nombre=%s, precio=%s, cantidad=%s, merma=%s, categoria=%s WHERE codigo=%s",
+                        (nombre, precio, cantidad, merma, categoria, id_producto))
+            cur.execute("UPDATE mm_prodtip SET ID_embolsado=%s WHERE ID_producto=%s", (tipo_venta, id_producto))
+            conn.commit()
+    return redirect('/inventario')
+
+@app.route('/Eliminar_producto', methods=['POST'])
+def eliminar_producto():
+    id_producto = request.form['ID'] # Obtiene el ID del producto donde se encuentra el boton de eliminar
+    if request.method == 'POST':
+        conn = Conexion()
+        with conn.cursor() as cur:
+            cur.execute("UPDATE productos SET Estado = 'Inactivo' WHERE codigo = %s", (id_producto)) # Elimina el producto de la base de datos usando su ID.
+        conn.commit()
+    return redirect('/inventario')
+
+@app.route("/BuscarProd", methods=['POST'])
+def Buscar_Producto():
+    Nombre_Producto = request.form['Buscar']
+    busca = f"%{Nombre_Producto}%"
+    if request.method == 'POST':
+        conn = Conexion()
+        with conn.cursor() as cur:
+            cur.execute("""SELECT \"Activo\" AS ESTADO, p.nombre, p.cantidad, p.precio, p.merma, p.categoria, e.nombre_embolsado AS Tipo_Venta, p.codigo 
+                FROM frutix.embolsado e 
+                JOIN frutix.mm_prodtip pr ON pr.ID_embolsado = e.id_em
+                JOIN frutix.productos p on pr.ID_producto = p.codigo
+                WHERE p.estado = 'Activo' AND p.nombre LIKE %s""", (busca)) 
+        
+        Filtro = cur.fetchall()
+    return render_template('inventario.html', Inventario=Filtro)
+
+EXTENSIONESPROD = {'png', 'jpg'}
+
+def ArchivoPermitido(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in EXTENSIONESPROD
+    
 @app.route('/agregarproductos.html', methods=['GET', 'POST'])
 def agregar_producto():
     conn = Conexion()
@@ -140,6 +194,16 @@ def agregar_producto():
         merma = request.form['merma'] # Obtiene los datos del formulario para agregar el producto nuevo a la base de datos
         categoria = request.form['categoria']
         tipo_venta = request.form['tipo_venta']
+        
+        foto = request.files.get('Imagen')
+
+        if foto and ArchivoPermitido(foto.filename):
+            extension = foto.filename.rsplit('.', 1)[1].lower()
+            nombre_archivo = secure_filename(f"{nombre}.{extension}")
+            ruta = os.path.join("static", nombre_archivo)
+            foto.save(ruta)
+        else:
+            return render_template('agregarproductos.html', error='Archivo no permitido')
 
         with conn.cursor() as cur:
             cur.execute("INSERT INTO productos (Nombre, precio, cantidad, merma, categoria) VALUES (%s, %s, %s, %s, %s)",
@@ -148,6 +212,7 @@ def agregar_producto():
             cur.execute("INSERT INTO mm_prodtip (ID_producto, ID_embolsado) VALUES (%s, %s)",
                         (producto_id, tipo_venta))
             conn.commit()
+               
     return render_template('agregarproductos.html') 
 
 
@@ -160,7 +225,8 @@ def ventas():
     cur.execute("""SELECT p.codigo, p.nombre, p.cantidad, p.precio, p.merma, p.categoria,e.nombre_embolsado AS Tipo_Venta 
                 FROM frutix.embolsado e 
                 JOIN frutix.mm_prodtip pr ON pr.ID_embolsado = e.id_em
-                JOIN frutix.productos p on pr.ID_producto = p.codigo""")
+                JOIN frutix.productos p on pr.ID_producto = p.codigo
+                WHERE p.estado = 'Activo'""") # Consulta para obtener la informacion de los productos del inventario, mostrando solo los productos activos, ademas de mostrar su tipo de venta usando un JOIN con las tablas mm_prodtip y embolsado.
     Productos = cur.fetchall()
     return render_template('ventas.html', productos=Productos) # Obtiene los productos del inventario los cuales se muestran en la pagina de ventas
 
@@ -199,7 +265,8 @@ def procesar_venta():
 
                 productos_vendidos.append(f"{nombre} x{cantidad}") # Agrega el producto vendido a la lista de productos vendidos.
 
-                detalles.append((id_producto, cantidad, precio)) # Almacena los detalles del prducto vendido en la lista de detalles para ingresarlo a la tabla mm_vp.
+                detalles.append((id_producto, cantidad, precio)) # Almacena los detalles del producto vendido en la lista de detalles para ingresarlo a la tabla mm_vp.
+                
             if id_producto is None:
                 flash("La cantidad del producto debe ser mayor a 0", "error") # En caso de que no se seleccione una cantidad para un producto, 
                 conn.rollback()                                               # se muestra un mensaje de error indicando que la cantidad debe ser mayor a 0.
@@ -212,7 +279,7 @@ def procesar_venta():
 
     cur.execute("INSERT INTO Hora (Hora) VALUES (CURTIME())") # Almacena la hora actual en la tabla Hora con CURTIME() el cual la almacena con el formato Hora:Minuto:Segundo
     id_hora = cur.lastrowid # Obtiene el ID de la ultima hora almacenada para relacionarla con la venta realizada.
-
+    
     cur.execute("""
         INSERT INTO ventas (Concepto, Fecha, Hora, Total, Empleado)
         VALUES (%s, %s, %s, %s, %s)
@@ -228,6 +295,9 @@ def procesar_venta():
             INSERT INTO mm_vp (ID_Producto, ID_Venta, cantidad, Precio_unitario)
             VALUES (%s, %s, %s, %s)
         """, (id_producto, id_venta, cantidad, precio)) # se repite por cada producto vendido 
+            cur.execute("""
+                UPDATE productos p SET Cantidad = Cantidad - %s WHERE p.codigo = %s
+            """, (cantidad, id_producto)) # Actualiza la cantidad de cada producto vendido en la base de datos, restando la cantidad vendida a la cantidad actual del producto para mantener el inventario actualizado.
         except Exception as e:
             print("ERROR EN mm_vp:", e)
 
@@ -243,12 +313,12 @@ def filtrar_productos():
     cur = conn.cursor()
 
     if categoria == "todas":
-        cur.execute("SELECT codigo, nombre, cantidad, precio FROM productos") # Si se selecciona la opcion de "Todos" obtiene todos los productos
+        cur.execute("SELECT codigo, nombre, cantidad, precio FROM productos WHERE ESTADO = 'Activo'") # Si se selecciona la opcion de "Todos" obtiene todos los productos
     else:
         cur.execute("""
             SELECT codigo, nombre, cantidad, precio 
             FROM productos 
-            WHERE categoria = %s
+            WHERE categoria = %s and estado = 'Activo'
         """, (categoria,)) # Si selecciona una categoria se ejecuta la consulta con la clausula WHERE. 
 
     filas = cur.fetchall()
@@ -266,12 +336,18 @@ def filtrar_productos():
 
 #------------------------USUARIOS-------------------------------
 @app.route('/usuarios')
+@login_required
 def usuarios():
     conn = Conexion()
     cur = conn.cursor()
-    cur.execute("SELECT ID_U, Nombre, Contraseña, Rol FROM USUARIOS") # Dado a que solo el administrador tiene acceso a la gestion de usuarios,
+    cur.execute("SELECT ID_U, Nombre, Contraseña, Rol FROM USUARIOS WHERE ESTADO = 'Activo'") # Dado a que solo el administrador tiene acceso a la gestion de usuarios,
     Usuarios = cur.fetchall()                                         # se muestra toda la informacion de los usuarios para que se puedan modificar o eliminar.
     return render_template('usuarios.html', usuarios=Usuarios)
+
+EXTENSIONES = {'png', 'jpg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in EXTENSIONES
 
 @app.route('/Agregar_usuarios', methods=['POST'])
 def Agregar_usuarios():
@@ -282,6 +358,16 @@ def Agregar_usuarios():
     with conn.cursor() as cur:
         cur.execute("INSERT INTO usuarios (Nombre, Contraseña, Rol) VALUES (%s, %s, %s)", (Nombre, Contraseña, Rol))
         conn.commit() # Ingresa el usuario a la base de datos y confirma la transaccion para guardar los cambios realizados.
+           
+    foto = request.files.get('Imagen')
+
+    if foto and allowed_file(foto.filename):
+        extension = foto.filename.rsplit('.', 1)[1].lower()
+        nombre_archivo = secure_filename(f"{Nombre}.{extension}")
+        ruta = os.path.join("static/uploads", nombre_archivo)
+        foto.save(ruta)
+    else:
+        print("Archivo no permitido")
     return redirect('/usuarios')
 
 @app.route('/Modificar_usuarios', methods=['POST'])
@@ -300,9 +386,9 @@ def eliminar_usuarios():
     conn = Conexion()
     ID_Usuario = request.form['ID_usuario'] # Obtiene el ID del usuario donde se encuentra el boton de eliminar
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM USUARIOS WHERE ID_U = %s", (ID_Usuario)) # Elimina el usuario de la base de datos usando el ID.
+        cur.execute("UPDATE USUARIOS SET ESTADO = 'Inactivo' WHERE ID_U = %s", (ID_Usuario)) # Marca el usuario como inactivo en la base de datos usando el ID.
         conn.commit()
-    return('/usuarios')
+    return redirect('/usuarios')
 
 #------------------------CAJA Y GASTOS-------------------------------
 @app.route('/caja')
@@ -316,7 +402,7 @@ def caja():
         JOIN Hora h ON v.Hora = h.ID_H
         ORDER BY f.Fecha DESC, h.Hora DESC
     """) # Obtiene las ventas realizadas, mostrando su concepto, total, fecha y hora, ordenandolas de la mas reciente a la mas antigua para mostrar 
-         # un historial de ventas en el apartado de caja.  (Cambiar para que solo muestre las ventas del turno actual)
+         # un historial de ventas en el apartado de caja.  (Pendiente: Cambiar para que solo muestre las ventas del turno actual)
     ventas = cur.fetchall()
     cur.execute("SELECT SUM(Total) FROM ventas") # calcula el total de ventas realizadas para mostrarlo en caja como Ganacias del turno
     total_ventas = cur.fetchone()[0]

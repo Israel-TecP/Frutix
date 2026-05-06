@@ -156,8 +156,8 @@
         </div>
 
         <div class="usuario">
-            <span>{{ tipo_usuario }}</span>
-            <img src="/static/user.png" width="35">
+            <span>{{ current_user.username }}</span>
+            <img src="/static/{{ current_user.username }}.png" width="35">
         </div>
     </div>
 
@@ -200,12 +200,12 @@
 
             <div class="form-group">
                 <label>Concepto:</label>
-                <input type="text" name="concepto" placeholder="Ej: Basura" required>
+                <input type="text" name="concepto" maxlength="49" placeholder="Ej: Basura" required>
             </div>
 
             <div class="form-group">
                 <label>Monto:</label>
-                <input type="number" name="monto" min="0" step="0.50" placeholder="Ej: 1500" required>
+                <input type="number" name="monto" min="0" max="99999"  maxlength="5" step="0.50" placeholder="Ej: 1500" required>
             </div>
 
             <div class="form-group">
