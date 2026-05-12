@@ -211,10 +211,22 @@ def agregar_producto():
             producto_id = cur.lastrowid # Obtiene el ID del ultimo producto agregado para relacionarlo a la tabla mm_prodtip
             cur.execute("INSERT INTO mm_prodtip (ID_producto, ID_embolsado) VALUES (%s, %s)",
                         (producto_id, tipo_venta))
+            cur.execute("""
+                        INSERT INTO inventario (Fecha, Hora, Tipo, Cantidad, Precio_Unitario, Producto)
+                        VALUES (CURDATE(), CURTIME(), 'Ingreso', %s, %s, %s)
+                        """, (cantidad, precio, producto_id))
             conn.commit()
                
     return render_template('agregarproductos.html') 
 
+@app.route('/Reporte_Inventario')
+@login_required
+def reporte_inventario():
+    conn = Conexion()
+    with conn.cursor() as cur:
+        cur.execute("""SELECT * FROM inventario""") # Consulta para obtener el reporte del inventario del dia actual, mostrando la cantidad de cada producto al inicio del dia, las entradas, salidas y la cantidad final de cada producto.
+        Productos = cur.fetchall()
+    return render_template('reporte_inventario.html', productos=Productos) # Muestra el reporte del inventario del dia actual, el cual se obtiene de la base de datos, mostrando la cantidad de cada producto al inicio del dia, las entradas, salidas y la cantidad final de cada producto.
 
 #------------------------VENTAS-------------------------------
 @app.route('/ventas')
@@ -298,6 +310,11 @@ def procesar_venta():
             cur.execute("""
                 UPDATE productos p SET Cantidad = Cantidad - %s WHERE p.codigo = %s
             """, (cantidad, id_producto)) # Actualiza la cantidad de cada producto vendido en la base de datos, restando la cantidad vendida a la cantidad actual del producto para mantener el inventario actualizado.
+            cur.execute("""
+                INSERT INTO inventario (Fecha, Hora, Tipo, Cantidad, Precio_Unitario, Producto)
+                SELECT CURDATE(), CURTIME(), 'Egreso', %s, %s, %s
+                WHERE %s > 0
+            """, (cantidad, precio, id_producto, cantidad))
         except Exception as e:
             print("ERROR EN mm_vp:", e)
 
